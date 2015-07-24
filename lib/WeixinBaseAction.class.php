@@ -2,12 +2,12 @@
 /**
  * 微信基类
  *
- * Filename: WXBaseAction.class.php
+ * Filename: WeixinBaseAction.class.php
  *
  * @author liyan
  * @since 2015 7 24
  */
-abstract class WXBaseAction extends XBaseAction {
+abstract class WeixinBaseAction extends XBaseAction {
 
     protected $xmlObj;
     protected $fromUser;
@@ -176,6 +176,27 @@ heredoc;
         $strRespond = sprintf($tpl, $this->fromUser, $this->toUser, time(),
             count($arrWeixinNews), $strArticles, $flag);
         $this->displayXML($strRespond);
+    }
+
+    protected function getOpenid() {
+        $code = MRequest::get('code');
+        $appid = Config::runtimeConfigForKeyPath('weixin.$.appid');
+        $appsecret = Config::runtimeConfigForKeyPath('weixin.$.appsecret');
+        $url = sprintf('https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code', $appid, $appsecret, $code);
+        $curl = MCurl::curlGetRequest($url);
+        $curl->setUseProxy(true);
+        $response = $curl->sendRequest();
+        $data = json_decode($response);
+
+        if (property_exists($data, 'openid')) {
+            $openid = $data->openid;
+            $accesstoken = $data->access_token;
+        } else {
+            $openid = 'test_user_abc';
+            $accesstoken = 'test_abc';
+        }
+
+        return $openid;
     }
 
 }
