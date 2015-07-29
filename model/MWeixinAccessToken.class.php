@@ -46,4 +46,8 @@ class MWeixinAccessToken {
         return $this->openId;
     }
 
+    protected function accessToken() {
+        return $this->accessToken;
+    }
+
 }
