@@ -25,7 +25,7 @@ abstract class WeixinBaseAction extends XBaseAction {
             echo $echostr;
             return;
         }
-//*
+/*
         if (!$this->checkSignature()) {
             $this->signatureFailed();
             return;
@@ -67,17 +67,18 @@ abstract class WeixinBaseAction extends XBaseAction {
     protected function receivedUnknown($postObj) {}
 
     private function checkSignature() {
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
+        $signature = MRequest::get("signature");
+        $timestamp = MRequest::get("timestamp");
+        $nonce = MRequest::get("nonce");
 
-        $token = ModuleWeixin::module()->token();
+        // $token = ModuleWeixin::module()->token();
+        $token = ModuleWeixin::config('token');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
 
-        if( $tmpStr !== $signature ){
+        if( $tmpStr !== $signature ) {
             Trace::debug('check signature: '.serialize($_GET));
             Trace::debug('tmpstr: '.$tmpStr);
             Trace::debug('debugsigfail:'.serialize($_GET).$tmpStr);
