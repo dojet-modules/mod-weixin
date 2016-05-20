@@ -25,7 +25,7 @@ abstract class WeixinBaseAction extends XBaseAction {
             echo $echostr;
             return;
         }
-/*
+//*
         if (!$this->checkSignature()) {
             $this->signatureFailed();
             return;
