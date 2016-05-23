@@ -31,6 +31,14 @@ class MWeixinNews {
         return $news;
     }
 
+    public static function linkNews($title, $desc, $url) {
+        $news = new MWeixinNews();
+        $news->setTitle($title);
+        $news->setDesc($desc);
+        $news->setUrl($url);
+        return $news;
+    }
+
     public function setTitle($title) {
         $this->title = $title;
     }
