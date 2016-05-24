@@ -125,20 +125,10 @@ abstract class WeixinBaseAction extends XBaseAction {
 </xml>
 heredoc;
 
-        $itemTpl = <<<heredoc
-<item>
-<Title><![CDATA[%s]]></Title>
-<Description><![CDATA[%s]]></Description>
-<PicUrl><![CDATA[%s]]></PicUrl>
-<Url><![CDATA[%s]]></Url>
-</item>
-heredoc;
-
         $strArticles = '';
         foreach ($arrWeixinNews as $news) {
             DAssert::assert($news instanceof MWeixinNews, 'illegal news, must be MWeixinNews');
-            $strItem = sprintf($itemTpl, $news->title(), $news->desc(), $news->picurl(), $news->url());
-            $strArticles.= $strItem;
+            $strArticles.= $news->xml();
         }
 
         $strRespond = sprintf($tpl, $this->fromUser, $this->toUser, time(),

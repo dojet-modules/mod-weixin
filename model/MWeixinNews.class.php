@@ -1,6 +1,5 @@
 <?php
 /**
- * description
  *
  * Filename: MWeixinNews.class.php
  *
@@ -9,66 +8,49 @@
  */
 class MWeixinNews {
 
-    private $title;
-    private $desc;
-    private $picurl;
-    private $url;
+    protected $fields = array('title' => null, 'text' => null, 'picurl' => null, 'url' => null);
 
-    public static function news($title, $desc, $picurl, $url) {
-        $news = new MWeixinNews();
-        $news->setTitle($title);
-        $news->setDesc($desc);
-        $news->setPicurl($picurl);
-        $news->setUrl($url);
-        return $news;
+    function __construct($title, $text, $picurl, $url) {
+        $this->fields = array(
+            'title' => $title,
+            'text' => $text,
+            'picurl' => $picurl,
+            'url' => $url,
+            );
     }
 
-    public static function textNews($title, $desc, $picurl) {
-        $news = new MWeixinNews();
-        $news->setTitle($title);
-        $news->setDesc($desc);
-        $news->setPicurl($picurl);
-        return $news;
+    public static function news($title, $text, $picurl, $url) {
+        return new MWeixinNews($title, $text, $picurl, $url);
     }
 
-    public static function linkNews($title, $desc, $url) {
-        $news = new MWeixinNews();
-        $news->setTitle($title);
-        $news->setDesc($desc);
-        $news->setUrl($url);
-        return $news;
+    public static function textOnlyNews($text) {
+        return new MWeixinNews('', $text, '', '');
     }
 
-    public function setTitle($title) {
-        $this->title = $title;
+    public static function linkNews($title, $text, $url) {
+        return new MWeixinNews($title, $text, '', $url);
     }
 
-    public function title() {
-        return $this->title;
+    public function xml() {
+        $xmlTpl = <<<heredoc
+<item>
+<Title><![CDATA[%s]]></Title>
+<Description><![CDATA[%s]]></Description>
+<PicUrl><![CDATA[%s]]></PicUrl>
+<Url><![CDATA[%s]]></Url>
+</item>
+heredoc;
+        return sprintf($xmlTpl,
+            $this->fields['title'],
+            $this->fields['text'],
+            $this->fields['picurl'],
+            $this->fields['url'],
+            );
     }
 
-    public function setDesc($desc) {
-        $this->desc = $desc;
-    }
-
-    public function desc() {
-        return $this->desc;
-    }
-
-    public function setPicurl($picurl) {
-        $this->picurl = $picurl;
-    }
-
-    public function picurl() {
-        return $this->picurl;
-    }
-
-    public function setUrl($url) {
-        $this->url = $url;
-    }
-
-    public function url() {
-        return $this->url;
+    public function __get($key) {
+        DAssert::assertKeyExists($key, $this->fields);
+        return $this->fields[$key];
     }
 
 }
